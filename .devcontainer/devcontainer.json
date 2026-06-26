@@ -1,0 +1,52 @@
+{
+    "name": "Warp Development",
+    "image": "debian:sid",
+    "remoteUser": "dev",
+    "extensions": [
+        "rust-lang.rust-analyzer",
+        "xazwar.vscode-sidebar-recipes",
+        "EditorConfig.editorconfig",
+        "ms-vscode.cpptools"
+    ],
+    "settings": {
+        "rust-analyzer.cargo.targetDir": "/home/dev/cargo-output",
+        "rust-analyzer.cargo.extraEnv": {
+            "RUSTUP_TOOLCHAIN": "1.92.0"
+        },
+        "terminal.integrated.shell.linux": "/usr/bin/zsh",
+        "files.insertFinalNewline": true,
+        "files.trimFinalNewlines": true,
+        "editor.tabSize": 2,
+        "editor.formatOnSave": true,
+        "editor.formatOnPaste": true,
+        "editor.defaultFormatter": "rust-lang.rustfmt"
+    },
+    "mounts": [
+        {
+            "source": "${localWorkspaceFolder}/script",
+            "target": "/home/dev/setup/script",
+            "type": "bind"
+        },
+        {
+            "source": "${localWorkspaceFolder}/rust-toolchain.toml",
+            "target": "/home/dev/setup/rust-toolchain.toml",
+            "type": "bind"
+        },
+        {
+            "source": ".",
+            "target": "/workspace/warp",
+            "type": "bind"
+        }
+    ],
+    "remoteEnv": {
+        "HOME": "/home/dev"
+    },
+    "postCreateCommand": "/home/dev/setup/script/linux/install_test_deps",
+    "customizations": {
+        "vscode": {
+            "settings": {
+                "rust-analyzer.cargo.targetDir": "/home/dev/cargo-output"
+            }
+        }
+    }
+}

@@ -7,9 +7,19 @@
 "$PWD"/script/install_cargo_build_deps
 
 # note: keep this version in sync with wgslfmt in .github/workflows/ci.yml
-cargo install --git https://github.com/wgsl-analyzer/wgsl-analyzer --tag "2025-06-28" wgslfmt
+if ! command -v wgslfmt; then
+  echo "⬇️  Installing wgslfmt..."
+  timeout 60 cargo install --git https://github.com/wgsl-analyzer/wgsl-analyzer --tag "2025-06-28" wgslfmt
+else
+  echo "✅ wgslfmt already installed."
+fi
 
 "$PWD"/script/install_cargo_binstall
 
 # Install nextest, which we use as our test execution harness.
-cargo binstall --secure --no-confirm --no-discover-github-token cargo-nextest
+if ! command -v cargo-nextest; then
+  echo "⬇️  Installing cargo-nextest..."
+  timeout 60 cargo binstall --secure --no-confirm --no-discover-github-token cargo-nextest
+else
+  echo "✅ cargo-nextest already installed."
+fi

@@ -26,4 +26,14 @@ if ! command -v cargo; then
     echo -e "⚠️  ${red}Please start a new terminal session so that cargo is in your PATH.${reset}"
     exit 1
   fi
+elif [[ ! -f "$HOME/.cargo/bin/cargo" ]]; then
+  echo "⬇️  Cargo binary not found, reinstalling Rust..."
+  curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh $CI_FLAGS
+  CARGO_ENV_FILE="$HOME/.cargo/env"
+  if [[ -f "$CARGO_ENV_FILE" ]]; then
+    source "$CARGO_ENV_FILE"
+  else
+    echo -e "⚠️  ${red}Please start a new terminal session so that cargo is in your PATH.${reset}"
+    exit 1
+  fi
 fi
