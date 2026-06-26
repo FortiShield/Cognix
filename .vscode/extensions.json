@@ -1,10 +1,32 @@
 {
+  // Extensions to recommend when opening this workspace.
+  // Keep in sync with .devcontainer/devcontainer.json's extensions list.
   "recommendations": [
+    // ── Rust ───────────────────────────────────────────────────────────────
+    // Language server: completions, go-to-def, inline errors, etc.
+    "rust-lang.rust-analyzer",
+    // Native debugger (LLDB) — required by all launch configurations.
+    "vadimcn.vscode-lldb",
+    // ── Data / Config formats ───────────────────────────────────────────────
+    // TOML support with schema validation (Cargo.toml, rust-toolchain.toml…).
+    "tamasfe.even-better-toml",
+    // GraphQL schema and query highlighting (crates/graphql, crates/warp_graphql_schema).
     "GraphQL.vscode-graphql",
     "GraphQL.vscode-graphql-syntax",
+    // ── Other languages ─────────────────────────────────────────────────────
+    // PowerShell support (the repo ships .ps1 scripts and a PSScriptAnalyzer config).
     "ms-vscode.PowerShell",
-    "rust-lang.rust-analyzer",
-    "tamasfe.even-better-toml",
-    "vadimcn.vscode-lldb",
+    // C/C++ support for the Objective-C / C++ sources under app/src/.
+    "ms-vscode.cpptools",
+    // ── Workspace hygiene ───────────────────────────────────────────────────
+    // Honour the project's .editorconfig (final newlines, trim whitespace, etc.).
+    "EditorConfig.editorconfig"
   ],
+  // Extensions that actively conflict with this project's tooling and should
+  // not be installed.
+  "unwantedRecommendations": [
+    // rust-lang.rust is the older, deprecated Rust extension; rust-analyzer
+    // is the current one and they conflict if both are installed.
+    "rust-lang.rust"
+  ]
 }
