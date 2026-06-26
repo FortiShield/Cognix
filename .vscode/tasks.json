@@ -1,46 +1,109 @@
 {
-    "version": "2.0.0",
-    "tasks": [
-        {
-            "label": "Watch",
-            "group": "build",
-            "type": "shell",
-            "command": "cargo watch",
-            "problemMatcher": "$rustc-watch",
-            "isBackground": true
-        },
-        {
-            "type": "cargo",
-            "command": "build",
-            "problemMatcher": [
-                "$rustc"
-            ],
-            "group": {
-                "kind": "build",
-                "isDefault": true
-            },
-            "label": "rust: cargo build"
-        },
-        {
-            "type": "shell",
-            "command": "./script/run --dont-open",
-            "label": "build_warplocal"
-        },
-        {
-            "type": "shell",
-            "command": "./script/run --dont-open --features fast_dev",
-            "label": "build_warplocal_fastdev"
-        },
-        {
-            "type": "shell",
-            "command": "./script/run --dont-open --features fast_dev,with_local_session_sharing_server",
-            "label": "build_warplocal_fastdev_localsessionsharing"
-        },
-        {
-            "type": "shell",
-            "command": "./script/run --dont-open --features with_local_session_sharing_server",
-            "label": "build_warplocal_localsessionsharing"
-        }
-        // TODO: If adding more configs that just add feature flags, consider argument passing from launch.json to tasks.json
-    ]
+  "version": "2.0.0",
+  "tasks": [
+    // ── Build ────────────────────────────────────────────────────────────────
+    {
+      // Default build task (Ctrl/Cmd+Shift+B). Runs a plain `cargo build`
+      // against the default workspace members.
+      "label": "Build (cargo build)",
+      "type": "cargo",
+      "command": "build",
+      "problemMatcher": ["$rustc"],
+      "group": {
+        "kind": "build",
+        "isDefault": true
+      }
+    },
+    {
+      // Watch mode: rebuilds automatically on file changes.
+      // Requires `cargo-watch` (install with: cargo install cargo-watch).
+      "label": "Watch (cargo watch)",
+      "type": "shell",
+      "command": "cargo watch",
+      "problemMatcher": "$rustc-watch",
+      "isBackground": true,
+      "group": "build"
+    },
+    // ── Presubmit / Lint ─────────────────────────────────────────────────────
+    {
+      // Run the full presubmit suite (fmt + clippy + clang-format + wgslfmt +
+      // PSScriptAnalyzer + nextest) — same as CI. Run this before pushing.
+      "label": "Presubmit (script/presubmit)",
+      "type": "shell",
+      "command": "./script/presubmit",
+      "problemMatcher": ["$rustc"],
+      "group": "test",
+      "presentation": {
+        "reveal": "always",
+        "panel": "dedicated"
+      }
+    },
+    {
+      // Format all Rust sources in place.
+      "label": "Format (cargo fmt)",
+      "type": "shell",
+      "command": "cargo fmt",
+      "problemMatcher": [],
+      "group": "build"
+    },
+    {
+      // Run Clippy over the whole workspace (mirrors what presubmit does).
+      "label": "Clippy (workspace)",
+      "type": "shell",
+      "command": "cargo clippy --workspace --exclude warp_completer --all-targets --all-features --tests -- -D warnings",
+      "problemMatcher": ["$rustc"],
+      "group": "build"
+    },
+    // ── Test ─────────────────────────────────────────────────────────────────
+    {
+      // Run the full test suite with nextest (mirrors what presubmit does).
+      "label": "Test (cargo nextest)",
+      "type": "shell",
+      "command": "cargo nextest run --no-fail-fast --workspace --exclude command-signatures-v2",
+      "problemMatcher": ["$rustc"],
+      "group": {
+        "kind": "test",
+        "isDefault": true
+      },
+      "presentation": {
+        "reveal": "always",
+        "panel": "dedicated"
+      }
+    },
+    // ── Run (macOS bundle builds — preLaunchTask targets) ────────────────────
+    // These tasks are invoked by launch.json configurations; they build the
+    // WarpLocal .app bundle before the debugger attaches.
+    // NOTE: `./script/run` auto-detects the platform; on Linux it runs
+    //       `cargo run` directly instead of creating an app bundle.
+    {
+      "label": "build_warplocal",
+      "type": "shell",
+      "command": "./script/run --dont-open",
+      "problemMatcher": ["$rustc"],
+      "group": "build"
+    },
+    {
+      "label": "build_warplocal_fastdev",
+      "type": "shell",
+      "command": "./script/run --dont-open --features fast_dev",
+      "problemMatcher": ["$rustc"],
+      "group": "build"
+    },
+    {
+      "label": "build_warplocal_fastdev_localsessionsharing",
+      "type": "shell",
+      "command": "./script/run --dont-open --features fast_dev,with_local_session_sharing_server",
+      "problemMatcher": ["$rustc"],
+      "group": "build"
+    },
+    {
+      "label": "build_warplocal_localsessionsharing",
+      "type": "shell",
+      "command": "./script/run --dont-open --features with_local_session_sharing_server",
+      "problemMatcher": ["$rustc"],
+      "group": "build"
+    }
+    // TODO: If adding more configs that just add feature flags, consider
+    //       argument passing from launch.json to tasks.json instead.
+  ]
 }
