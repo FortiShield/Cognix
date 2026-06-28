@@ -14,9 +14,9 @@ humantime.workspace = true
 jaq-all.workspace = true
 url = { workspace = true, features = ["serde"] }
 uuid = { workspace = true }
-warp_core = { path = "../warp_core" }
+warp_core = { workspace = true }
 color-print = "0.3"
-warp_util = { path = "../warp_util" }
+warp_util = { workspace = true }
 clap_complete = "4.5.58"
 anyhow.workspace = true
 

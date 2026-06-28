@@ -1,7 +1,9 @@
 [workspace]
 members = [
   "crates/*",
-  "app",
+  "core/*",
+  "ui/*",
+  "apps/*",
 ]
 resolver = "2"
 
@@ -9,17 +11,17 @@ resolver = "2"
 # wasm binaries and not something we want to regularly compile or run
 # tests against) and integration (since it is only used for testing).
 default-members = [
-  "app",
+  "apps/desktop",
   "crates/channel_versions",
   "crates/command",
   "crates/editor",
-  "crates/graphql",
+  "core/warp_graphql",
   "crates/markdown_parser",
   "crates/sum_tree",
-  "crates/warpui",
-  "crates/warp_completer",
-  "crates/warp_terminal",
-  "crates/warp_util",
+  "ui/warpui",
+  "core/warp_completer",
+  "core/warp_terminal",
+  "core/warp_util",
 ]
 
 [workspace.package]
@@ -63,32 +65,32 @@ simple_logger = { path = "crates/simple_logger" }
 string-offset = { path = "crates/string-offset" }
 sum_tree = { path = "crates/sum_tree" }
 syntax_tree = { path = "crates/syntax_tree" }
-ui_components = { path = "crates/ui_components" }
+ui_components = { path = "ui/ui_components" }
 vim = { path = "crates/vim" }
 virtual-fs = { path = "crates/virtual_fs" }
 voice_input = { path = "crates/voice_input" }
-warp = { path = "app" }
-warp_cli = { path = "crates/warp_cli" }
-warp_completer = { path = "crates/warp_completer" }
-warp_core = { path = "crates/warp_core" }
+warp = { path = "apps/desktop" }
+warp_cli = { path = "core/warp_cli" }
+warp_completer = { path = "core/warp_completer" }
+warp_core = { path = "core/warp_core" }
 warp_editor = { path = "crates/editor" }
-warp_features = { path = "crates/warp_features" }
-remote_server = { path = "crates/remote_server" }
-warp_files = { path = "crates/warp_files" }
-warp_graphql = { path = "crates/graphql" }
-warp_graphql_schema = { path = "crates/warp_graphql_schema" }
-warp_isolation_platform = { path = "crates/isolation_platform" }
-warp_js = { path = "crates/warp_js" }
-warp_logging = { path = "crates/warp_logging" }
-warp_managed_secrets = { path = "crates/managed_secrets" }
-warp_ripgrep = { path = "crates/warp_ripgrep" }
-warp_server_client = { path = "crates/warp_server_client" }
-warp_terminal = { path = "crates/warp_terminal" }
-warp_util = { path = "crates/warp_util" }
-warp_web_event_bus = { path = "crates/warp_web_event_bus" }
-warpui = { path = "crates/warpui" }
-warpui_core = { path = "crates/warpui_core" }
-warpui_extras = { path = "crates/warpui_extras", default-features = false }
+warp_features = { path = "core/warp_features" }
+remote_server = { path = "core/remote_server" }
+warp_files = { path = "core/warp_files" }
+warp_graphql = { path = "core/warp_graphql" }
+warp_graphql_schema = { path = "core/warp_graphql_schema" }
+warp_isolation_platform = { path = "core/warp_isolation_platform" }
+warp_js = { path = "core/warp_js" }
+warp_logging = { path = "core/warp_logging" }
+warp_managed_secrets = { path = "core/warp_managed_secrets" }
+warp_ripgrep = { path = "core/warp_ripgrep" }
+warp_server_client = { path = "core/warp_server_client" }
+warp_terminal = { path = "core/warp_terminal" }
+warp_util = { path = "core/warp_util" }
+warp_web_event_bus = { path = "ui/warp_web_event_bus" }
+warpui = { path = "ui/warpui" }
+warpui_core = { path = "ui/warpui_core" }
+warpui_extras = { path = "ui/warpui_extras", default-features = false }
 watcher = { path = "crates/watcher" }
 websocket = { path = "crates/websocket" }
 

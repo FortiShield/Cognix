@@ -42,12 +42,12 @@ typed-path.workspace = true
 warp-command-signatures = {workspace = true}
 
 [target.'cfg(not(target_family = "wasm"))'.dependencies]
-command = { path = "../command" }
+command.workspace = true
 rquickjs = { workspace = true, optional = true }
 warp-command-signatures = {workspace = true, features = ["embed-signatures"]}
 
 [target.'cfg(not(target_family = "wasm"))'.dev-dependencies]
-command = { path = "../command", features = ["test-util"] }
+command.workspace = true
 
 [dev-dependencies]
 anyhow.workspace = true
