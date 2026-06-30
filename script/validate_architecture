@@ -1,0 +1,76 @@
+#!/usr/bin/env bash
+
+set -e
+cd "$(dirname "$0")/.."
+
+echo "Running cargo metadata..."
+
+META_FILE="$(mktemp -t validate_architecture.XXXXXX.json)"
+trap 'rm -f "$META_FILE"' EXIT
+cargo metadata --format-version 1 > "$META_FILE"
+
+META_FILE="$META_FILE" python3 <<'PY'
+import json, os, sys
+meta_file = os.environ.get('META_FILE')
+if not meta_file:
+    raise SystemExit('META_FILE not set')
+with open(meta_file, 'r') as f:
+    data = json.load(f)
+root = data['workspace_root']
+
+categories = {
+    'apps': lambda path: path.startswith('apps/'),
+    'ui': lambda path: path.startswith('ui/'),
+    'core': lambda path: path.startswith('core/'),
+    'integration': lambda path: path == 'crates/integration/Cargo.toml',
+    'crates': lambda path: path.startswith('crates/'),
+}
+
+package_category = {}
+for pkg in data['packages']:
+    if pkg.get('source') is not None:
+        continue
+    rel = pkg['manifest_path'][len(root) + 1:].replace('\\', '/')
+    cat = 'other'
+    for name, matcher in categories.items():
+        if matcher(rel):
+            cat = name
+            break
+    package_category[pkg['id']] = {'name': pkg['name'], 'cat': cat}
+
+allowed = {
+    'apps': {'apps', 'ui', 'core', 'crates', 'other'},
+    'ui': {'ui', 'core', 'crates', 'other'},
+    'core': {'core', 'ui', 'crates', 'other'},
+    'integration': {'apps', 'ui', 'core', 'crates', 'other'},
+    'crates': {'crates', 'core', 'ui', 'other'},
+    'other': {'other'},
+}
+
+print('Package categories:')
+counts = {}
+for pkg in package_category.values():
+    counts[pkg['cat']] = counts.get(pkg['cat'], 0) + 1
+for cat in sorted(counts):
+    print(f'  {cat}: {counts[cat]}')
+
+violation_count = 0
+for node in data['resolve']['nodes']:
+    if node['id'] not in package_category:
+        continue
+    src = package_category[node['id']]['cat']
+    for dep in node.get('deps', []):
+        dep_id = dep.get('pkg')
+        if dep_id not in package_category:
+            continue
+        tgt = package_category[dep_id]['cat']
+        if tgt not in allowed.get(src, set()):
+            violation_count += 1
+            print(f"VIOLATION: {package_category[node['id']]['name']}({src}) -> {package_category[dep_id]['name']}({tgt})")
+
+if violation_count > 0:
+    print(f'\nFound {violation_count} architecture dependency violations.')
+    sys.exit(1)
+
+print('\nArchitecture validation succeeded. No disallowed cross-category dependencies detected.')
+PY
