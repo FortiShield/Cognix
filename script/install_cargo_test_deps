@@ -23,3 +23,11 @@ if ! command -v cargo-nextest; then
 else
   echo "✅ cargo-nextest already installed."
 fi
+
+# Install cargo-udeps for architecture dependency checks.
+if ! command -v cargo-udeps; then
+  echo "⬇️  Installing cargo-udeps..."
+  timeout 60 cargo install cargo-udeps --locked
+else
+  echo "✅ cargo-udeps already installed."
+fi
